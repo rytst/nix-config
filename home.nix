@@ -32,7 +32,7 @@
     enable = true;
     settings = {
       font = {
-        size = 7;
+        size = 11.5;
       };
       window = {
         opacity = 0.5;
@@ -55,6 +55,10 @@
     defaultEditor = true; 
   };
 
+  programs.wofi = {
+    enable = true;
+  };
+
   wayland.windowManager.hyprland = {
     # Whether to enable Hyprland wayland compositor
     enable = true;
@@ -68,12 +72,36 @@
     systemd.enable = true;
 
     settings = {
+
+      decoration = {
+        rounding = 10;
+
+	active_opacity = 0.8;
+	inactive_opacity = 0.7;
+      };
+
+
+      general = {
+        gaps_in = 5;
+	gaps_out = 5;
+
+	border_size = 2;
+      };
+
+
       "$mod" = "SUPER";
       bind =
         [
 	  "$mod, RETURN, exec, alacritty"
 	  "$mod, F, exec, firefox"
+	  "$mod, R, exec, wofi --show drun"
 	  "$mod, Q, killactive"
+
+          "$mod, H, movefocus, l"
+	  "$mod, J, movefocus, d"
+	  "$mod, K, movefocus, u"
+	  "$mod, L, movefocus, r"
+
 	  ", Print, exec, grimblast copy area"
 	]
 	++ (
@@ -92,9 +120,11 @@
 	  )
 	  10)
 	);
-    };
 
-    plugins = [ pkgs.hyprlandPlugins.hy3 ];
+      monitor = [
+        ", preferred, auto, 1"
+      ];
+    };
   };
 
 
@@ -138,6 +168,9 @@
   #   };
   # };
 
+  services.mako = {
+    enable = true;
+  };
 
   services.gpg-agent = {
     enable = true;
