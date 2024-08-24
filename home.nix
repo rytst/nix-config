@@ -35,7 +35,7 @@
         size = 7;
       };
       window = {
-        opacity = 0.8;
+        opacity = 0.5;
       };
     };
   };
@@ -55,19 +55,89 @@
     defaultEditor = true; 
   };
 
-
-  xsession.windowManager.i3 = {
+  wayland.windowManager.hyprland = {
+    # Whether to enable Hyprland wayland compositor
     enable = true;
-    package = pkgs.i3-gaps;
-    config = {
-      terminal = "alacritty";
-      modifier = "Mod4";
-      gaps = {
-        inner = 0;
-        outer = 0;
-      };
+    # The hyprland package to use
+    package = pkgs.hyprland;
+    # Whether to enable XWayland
+    xwayland.enable = true;
+
+    # Optional
+    # Whether to enable hyprland-session.target on hyprland startup
+    systemd.enable = true;
+
+    settings = {
+      "$mod" = "SUPER";
+      bind =
+        [
+	  "$mod, RETURN, exec, alacritty"
+	  "$mod, F, exec, firefox"
+	  "$mod, Q, killactive"
+	  ", Print, exec, grimblast copy area"
+	]
+	++ (
+	  # workspaces
+	  # binds $mod + [shift +] {1..10} [to move] workspace {1..10}
+	  builtins.concatLists (builtins.genList (
+	    x: let
+	      ws = let
+	        c = (x + 1) / 10;
+	      in
+	        builtins.toString (x + 1 - (c * 10));
+	    in [
+	      "$mod, ${ws}, workspace, ${toString (x + 1)}"
+	      "$mod SHIFT, ${ws}, movetoworkspace, ${toString (x + 1)}"
+	    ]
+	  )
+	  10)
+	);
     };
+
+    plugins = [ pkgs.hyprlandPlugins.hy3 ];
   };
+
+
+  # xdg.portal = {
+  #   enable = true;
+  #   extraPortals = [ pkgs.xdg-desktop-portal-hyprland ];
+  # };
+
+  # xsession.windowManager.i3 = {
+  #   enable = true;
+  #   package = pkgs.i3-gaps;
+  #   config = {
+  #     terminal = "alacritty";
+  #     modifier = "Mod4";
+  #     gaps = {
+  #       inner = 0;
+  #       outer = 0;
+  #     };
+  #     bars = [
+  #       {
+  #         position = "top";
+  #         statusCommand = "${pkgs.i3status-rust}/bin/i3status-rs ~/.config/i3status-rust/config-top.toml";
+  #       }
+  #     ];
+  #   };
+  # };
+
+
+  # programs.i3status-rust = {
+  #   enable = true;
+  #   bars = {
+  #     top = {
+  #       blocks = [
+  #        {
+  #          block = "time";
+  #          interval = 60;
+  #          format = " $timestamp.datetime(f:'%a %m/%d %y %R') ";
+  #        }
+  #      ];
+  #     };
+  #   };
+  # };
+
 
   services.gpg-agent = {
     enable = true;

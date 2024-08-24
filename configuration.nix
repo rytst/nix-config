@@ -29,10 +29,19 @@
   # Enable networking
   networking.networkmanager.enable = true;
 
+  # Enable Hyprland
+  programs.hyprland = {
+    enable = true;
+    portalPackage = pkgs.xdg-desktop-portal-hyprland;
+  };
+
+
   # Enable fish
   programs.fish = {
     enable = true;
   };
+
+  programs.dconf.enable = true;
 
   # Set your time zone.
   time.timeZone = "Asia/Tokyo";
@@ -99,14 +108,25 @@
   # List services that you want to enable:
 
   # Enable the xserver and i3
-  services.xserver = {
-    enable = true;
-    windowManager.i3.enable = true;
-  };
+  # services.xserver = {
+  #   enable = true;
+  #   windowManager.i3.enable = true;
+  # };
 
-  services.displayManager = {
-    defaultSession = "none+i3";
-  }; 
+
+  security.polkit.enable = true;
+
+
+  # rtkit is optional but recommended
+  security.rtkit.enable = true;
+  services.pipewire = {
+    enable = true;
+    alsa.enable = true;
+    alsa.support32Bit = true;
+    pulse.enable = true;
+    # If you want to use JACK applications, uncomment this
+    #jack.enable = true;
+  };
 
   # Enable the OpenSSH daemon.
   services.openssh = {
