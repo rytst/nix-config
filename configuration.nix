@@ -72,8 +72,8 @@
     mplus-outline-fonts.githubRelease
     dina-font
     proggyfonts
+    (nerdfonts.override { fonts = [ "FiraCode" ]; })
   ];
-
 
   # Configure keymap in X11
   services.xserver.xkb = {
@@ -85,7 +85,7 @@
   users.users.rytst = {
     isNormalUser = true;
     description = "rytst";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "docker" ];
     packages = with pkgs; [];
     shell = pkgs.fish;
   };
@@ -105,6 +105,9 @@
   #   enable = true;
   #   enableSSHSupport = true;
   # };
+
+
+  virtualisation.docker.enable = true;
 
   # List services that you want to enable:
 

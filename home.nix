@@ -28,16 +28,35 @@
   };
 
 
-  programs.alacritty = {
+  # programs.alacritty = {
+  #   enable = true;
+  #   settings = {
+  #     font = {
+  #       normal = {
+  #         family = "FiraCode Nerd Font";
+  #         style = "Regular";
+  #       };
+
+  #       size = 11.25;
+  #     };
+  #     window = {
+  #       opacity = 0.5;
+  #     };
+  #   };
+  # };
+
+  programs.kitty = {
     enable = true;
-    settings = {
-      font = {
-        size = 11.5;
-      };
-      window = {
-        opacity = 0.5;
-      };
+    font = {
+      name = "FiraCode Nerd Font";
+      size = 12;
     };
+    extraConfig = "
+
+      enable_audio_bell no \n
+
+      confirm_os_window_close 0 \n
+    ";
   };
 
   programs.git = {
@@ -92,10 +111,12 @@
       "$mod" = "SUPER";
       bind =
         [
-	  "$mod, RETURN, exec, alacritty"
+	  # "$mod, RETURN, exec, alacritty"
+	  "$mod, RETURN, exec, kitty"
 	  "$mod, F, exec, firefox"
 	  "$mod, R, exec, wofi --show drun"
 	  "$mod, Q, killactive"
+	  "$mod, M, exit"
 
           "$mod, H, movefocus, l"
 	  "$mod, J, movefocus, d"
@@ -124,7 +145,22 @@
       monitor = [
         ", preferred, auto, 1"
       ];
+
+      exec-once = [
+        "waybar"
+      ];
     };
+  };
+
+
+  programs.waybar = {
+    enable = true;
+
+    style = ''
+      * {
+        font-family: 'FiraCode Nerd Font';
+      }
+    '';
   };
 
 
