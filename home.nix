@@ -1,6 +1,11 @@
 { config, pkgs, ... }:
 
 {
+  imports = [
+    ./config/neovim.nix
+  ];
+
+
   # Home Manager needs a bit of information about you and the
   # paths it should manage.
   home.username = "rytst";
@@ -9,6 +14,7 @@
   # Packages that should be installed to the user profile.
   home.packages = [
     pkgs.neofetch
+    pkgs.fastfetch
     pkgs.btop
   ];
 
@@ -28,22 +34,9 @@
   };
 
 
-  # programs.alacritty = {
-  #   enable = true;
-  #   settings = {
-  #     font = {
-  #       normal = {
-  #         family = "FiraCode Nerd Font";
-  #         style = "Regular";
-  #       };
-
-  #       size = 11.25;
-  #     };
-  #     window = {
-  #       opacity = 0.5;
-  #     };
-  #   };
-  # };
+  programs.go = {
+    enable = true;
+  };
 
   programs.kitty = {
     enable = true;
@@ -67,11 +60,6 @@
 
   programs.firefox = {
     enable = true;
-  };
-
-  programs.neovim = {
-    enable = true;
-    defaultEditor = true; 
   };
 
   programs.wofi = {

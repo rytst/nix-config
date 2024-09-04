@@ -86,7 +86,9 @@
     isNormalUser = true;
     description = "rytst";
     extraGroups = [ "networkmanager" "wheel" "docker" ];
-    packages = with pkgs; [];
+    packages = with pkgs; [
+      qmk
+    ];
     shell = pkgs.fish;
   };
 
@@ -96,6 +98,10 @@
     vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
     wget
   ];
+
+  hardware.keyboard.qmk = {
+    enable = true;
+  };
 
 
   # Some programs need SUID wrappers, can be configured further or are
