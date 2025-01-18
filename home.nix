@@ -1,57 +1,101 @@
 { config, pkgs, ... }:
 
 {
+
   imports = [
-    ./config/neovim.nix
+    ./home/shell
   ];
 
-
-  # Home Manager needs a bit of information about you and the
-  # paths it should manage.
+  # TODO please change the username & home directory to your own
   home.username = "rytst";
   home.homeDirectory = "/home/rytst";
 
+  # link the configuration file in current directory to the specified location in home directory
+  # home.file.".config/i3/wallpaper.jpg".source = ./wallpaper.jpg;
+
+  # link all files in `./scripts` to `~/.config/i3/scripts`
+  # home.file.".config/i3/scripts" = {
+  #   source = ./scripts;
+  #   recursive = true;   # link recursively
+  #   executable = true;  # make all files executable
+  # };
+
+  # encode the file content in nix configuration file directly
+  # home.file.".xxx".text = ''
+  #     xxx
+  # '';
+
   # Packages that should be installed to the user profile.
-  home.packages = [
-    pkgs.neofetch
-    pkgs.fastfetch
-    pkgs.btop
+  home.packages = with pkgs; [
+    # here is some command line tools I use frequently
+    # feel free to add your own or remove some of them
+
+    neofetch
+    nnn # terminal file manager
+
+    # archives
+    zip
+    xz
+    unzip
+    p7zip
+
+    # utils
+    ripgrep # recursively searches directories for a regex pattern
+    jq # A lightweight and flexible command-line JSON processor
+    yq-go # yaml processor https://github.com/mikefarah/yq
+    eza # A modern replacement for ‘ls’
+    fzf # A command-line fuzzy finder
+
+    # networking tools
+    mtr # A network diagnostic tool
+    iperf3
+    dnsutils  # `dig` + `nslookup`
+    ldns # replacement of `dig`, it provide the command `drill`
+    aria2 # A lightweight multi-protocol & multi-source command-line download utility
+    socat # replacement of openbsd-netcat
+    nmap # A utility for network discovery and security auditing
+    ipcalc  # it is a calculator for the IPv4/v6 addresses
+
+    # misc
+    cowsay
+    file
+    which
+    tree
+    gnused
+    gnutar
+    gawk
+    zstd
+    gnupg
+    gitmoji-cli
+
+    # nix related
+    #
+    # it provides the command `nom` works just like `nix`
+    # with more details log output
+    nix-output-monitor
+
+    # productivity
+    hugo # static site generator
+    glow # markdown previewer in terminal
+
+    btop  # replacement of htop/nmon
+    iotop # io monitoring
+    iftop # network monitoring
+
+    # system call monitoring
+    strace # system call monitoring
+    ltrace # library call monitoring
+    lsof # list open files
+
+    # system tools
+    sysstat
+    lm_sensors # for `sensors` command
+    ethtool
+    pciutils # lspci
+    usbutils # lsusb
   ];
 
-  # This value determines the Home Manager release that your
-  # configuration is compatible with. This helps avoid breakage
-  # when a new Home Manager release introduces backwards
-  # incompatible changes.
-  #
-  # You can update Home Manager without changing this value. See
-  # the Home Manager release notes for a list of state version
-  # changes in each release.
-  home.stateVersion = "24.05";
-
-  # Let Home Manager install and manage itself.
-  programs.home-manager = {
-    enable = true;
-  };
-
-
-  programs.go = {
-    enable = true;
-  };
-
-  programs.kitty = {
-    enable = true;
-    font = {
-      name = "FiraCode Nerd Font";
-      size = 12;
-    };
-    extraConfig = "
-
-      enable_audio_bell no \n
-
-      confirm_os_window_close 0 \n
-    ";
-  };
-
+  # basic configuration of git, please change to your own
   programs.git = {
     enable = true;
     userName = "rytst";
@@ -62,143 +106,32 @@
     enable = true;
   };
 
-  programs.wofi = {
+  programs.bash = {
     enable = true;
-  };
+    enableCompletion = true;
+    # TODO add your custom bashrc here
+    bashrcExtra = ''
+      export PATH="$PATH:$HOME/bin:$HOME/.local/bin:$HOME/go/bin"
+    '';
 
-  wayland.windowManager.hyprland = {
-    # Whether to enable Hyprland wayland compositor
-    enable = true;
-    # The hyprland package to use
-    package = pkgs.hyprland;
-    # Whether to enable XWayland
-    xwayland.enable = true;
-
-    # Optional
-    # Whether to enable hyprland-session.target on hyprland startup
-    systemd.enable = true;
-
-    settings = {
-
-      decoration = {
-        rounding = 10;
-
-	active_opacity = 0.8;
-	inactive_opacity = 0.7;
-      };
-
-
-      general = {
-        gaps_in = 5;
-	gaps_out = 5;
-
-	border_size = 2;
-      };
-
-
-      "$mod" = "SUPER";
-      bind =
-        [
-	  # "$mod, RETURN, exec, alacritty"
-	  "$mod, RETURN, exec, kitty"
-	  "$mod, F, exec, firefox"
-	  "$mod, R, exec, wofi --show drun"
-	  "$mod, Q, killactive"
-	  "$mod, M, exit"
-
-          "$mod, H, movefocus, l"
-	  "$mod, J, movefocus, d"
-	  "$mod, K, movefocus, u"
-	  "$mod, L, movefocus, r"
-
-	  ", Print, exec, grimblast copy area"
-	]
-	++ (
-	  # workspaces
-	  # binds $mod + [shift +] {1..10} [to move] workspace {1..10}
-	  builtins.concatLists (builtins.genList (
-	    x: let
-	      ws = let
-	        c = (x + 1) / 10;
-	      in
-	        builtins.toString (x + 1 - (c * 10));
-	    in [
-	      "$mod, ${ws}, workspace, ${toString (x + 1)}"
-	      "$mod SHIFT, ${ws}, movetoworkspace, ${toString (x + 1)}"
-	    ]
-	  )
-	  10)
-	);
-
-      monitor = [
-        ", preferred, auto, 1"
-      ];
-
-      exec-once = [
-        "waybar"
-      ];
+    # set some aliases, feel free to add more or remove some
+    shellAliases = {
+      k = "kubectl";
+      urldecode = "python3 -c 'import sys, urllib.parse as ul; print(ul.unquote_plus(sys.stdin.read()))'";
+      urlencode = "python3 -c 'import sys, urllib.parse as ul; print(ul.quote_plus(sys.stdin.read()))'";
     };
   };
 
+  # This value determines the home Manager release that your
+  # configuration is compatible with. This helps avoid breakage
+  # when a new home Manager release introduces backwards
+  # incompatible changes.
+  #
+  # You can update home Manager without changing this value. See
+  # the home Manager release notes for a list of state version
+  # changes in each release.
+  home.stateVersion = "24.05";
 
-  programs.waybar = {
-    enable = true;
-
-    style = ''
-      * {
-        font-family: 'FiraCode Nerd Font';
-      }
-    '';
-  };
-
-
-  # xdg.portal = {
-  #   enable = true;
-  #   extraPortals = [ pkgs.xdg-desktop-portal-hyprland ];
-  # };
-
-  # xsession.windowManager.i3 = {
-  #   enable = true;
-  #   package = pkgs.i3-gaps;
-  #   config = {
-  #     terminal = "alacritty";
-  #     modifier = "Mod4";
-  #     gaps = {
-  #       inner = 0;
-  #       outer = 0;
-  #     };
-  #     bars = [
-  #       {
-  #         position = "top";
-  #         statusCommand = "${pkgs.i3status-rust}/bin/i3status-rs ~/.config/i3status-rust/config-top.toml";
-  #       }
-  #     ];
-  #   };
-  # };
-
-
-  # programs.i3status-rust = {
-  #   enable = true;
-  #   bars = {
-  #     top = {
-  #       blocks = [
-  #        {
-  #          block = "time";
-  #          interval = 60;
-  #          format = " $timestamp.datetime(f:'%a %m/%d %y %R') ";
-  #        }
-  #      ];
-  #     };
-  #   };
-  # };
-
-  services.mako = {
-    enable = true;
-  };
-
-  services.gpg-agent = {
-    enable = true;
-    defaultCacheTtl = 1800;
-    enableSshSupport = true;
-  };
+  # Let home Manager install and manage itself.
+  programs.home-manager.enable = true;
 }
