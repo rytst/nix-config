@@ -62,12 +62,21 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
+    gcc
+    gdb
+    libgcc
+    gnumake
+    cmake
+    extra-cmake-modules
     vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
     neovim
     wget
     fastfetch
     btop
     hyprpaper
+    fish
+
+    python3
 
     kubectl
     kind
@@ -90,6 +99,10 @@
     portalPackage = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
 
     xwayland.enable = true;
+  };
+
+  programs.waybar = {
+    enable = true;
   };
 
   fonts.packages = with pkgs; [

@@ -45,6 +45,7 @@
     yq-go # yaml processor https://github.com/mikefarah/yq
     eza # A modern replacement for ‘ls’
     fzf # A command-line fuzzy finder
+    sxiv
 
     # networking tools
     mtr # A network diagnostic tool
@@ -120,6 +121,24 @@
       urldecode = "python3 -c 'import sys, urllib.parse as ul; print(ul.unquote_plus(sys.stdin.read()))'";
       urlencode = "python3 -c 'import sys, urllib.parse as ul; print(ul.quote_plus(sys.stdin.read()))'";
     };
+  };
+
+  programs.wofi = {
+    enable = true;
+    settings = {
+      location = "bottom-right";
+      allow_markup = true;
+      width = 250;
+    };
+    style = ''
+      * {
+          font-family: monospace;
+      }
+
+      window {
+          background-color: #7c818c;
+      }
+    '';
   };
 
   # This value determines the home Manager release that your
