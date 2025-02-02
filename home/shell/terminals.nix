@@ -11,7 +11,7 @@ in
     enable = true;
     font = {
       name = font;
-      size = 11.5;
+      size = 14;
     };
     settings = {
       enable_audio_bell = false;

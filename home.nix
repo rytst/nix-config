@@ -1,9 +1,11 @@
-{ config, pkgs, ... }:
+{ lib, config, pkgs, ... }:
+
 
 {
 
   imports = [
     ./home/shell
+    ./home/hack
   ];
 
   # TODO please change the username & home directory to your own
@@ -20,6 +22,7 @@
   #   executable = true;  # make all files executable
   # };
 
+
   # encode the file content in nix configuration file directly
   # home.file.".xxx".text = ''
   #     xxx
@@ -30,6 +33,7 @@
     # here is some command line tools I use frequently
     # feel free to add your own or remove some of them
 
+    bc
     neofetch
     nnn # terminal file manager
 
@@ -57,6 +61,8 @@
     nmap # A utility for network discovery and security auditing
     ipcalc  # it is a calculator for the IPv4/v6 addresses
 
+    metasploit
+
     # misc
     cowsay
     file
@@ -69,6 +75,7 @@
     gnupg
     gitmoji-cli
 
+
     # nix related
     #
     # it provides the command `nom` works just like `nix`
@@ -78,6 +85,9 @@
     # productivity
     hugo # static site generator
     glow # markdown previewer in terminal
+
+    nodejs_20
+    pnpm
 
     btop  # replacement of htop/nmon
     iotop # io monitoring
@@ -94,6 +104,10 @@
     ethtool
     pciutils # lspci
     usbutils # lsusb
+
+    ghidra
+
+    discord-ptb
   ];
 
   # basic configuration of git, please change to your own

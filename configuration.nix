@@ -10,6 +10,8 @@
       ./hardware-configuration.nix
     ];
 
+  nixpkgs.config.allowUnfree = true;
+
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -61,26 +63,34 @@
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
-  environment.systemPackages = with pkgs; [
-    gcc
-    gdb
-    libgcc
-    gnumake
-    cmake
-    extra-cmake-modules
-    vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-    neovim
-    wget
-    fastfetch
-    btop
-    hyprpaper
-    fish
+  environment.systemPackages = [
+    pkgs.gcc
+    pkgs.gdb
+    pkgs.man-pages
+    pkgs.tldr
+    pkgs.clang
+    pkgs.clang-tools
+    pkgs.libgcc
+    pkgs.gnumake
+    pkgs.cmake
+    pkgs.extra-cmake-modules
+    pkgs.vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+    pkgs.neovim
+    pkgs.wl-clipboard
+    pkgs.wget
+    pkgs.fastfetch
+    pkgs.btop
+    pkgs.hyprpaper
+    pkgs.hyprcursor
+    pkgs.fish
 
-    python3
+    pkgs.python3
 
-    kubectl
-    kind
-    kubernetes-helm
+    pkgs.kubectl
+    pkgs.kind
+    pkgs.kubernetes-helm
+
+    inputs.rose-pine-hyprcursor.packages.${pkgs.system}.default
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -118,6 +128,10 @@
   services.openssh.enable = true;
 
   virtualisation.docker.enable = true;
+
+#   programs.wireshark = {
+#     enable = true;
+#   };
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
